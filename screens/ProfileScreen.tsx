@@ -1,15 +1,15 @@
 import React from "react";
 import { Text, Button, StyleSheet, Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../src/context/AuthContext";
 
 export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
-
+    const { setToken } = useAuth();
     const handleLogout = async () => {
         try {
             const result = true;
             if (result) {
-                await AsyncStorage.removeItem("token");
+                setToken(null);
                 Alert.alert("Logged Out", "You have been logged out successfully.");
                 onLogout();
             }
