@@ -1,10 +1,23 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { uploadTest } from '../services/apiService';
 
 const UploadScreen: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+
+    const handleFetchData = async () => {
+        try {
+            const result = await uploadTest();
+            setData(result);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Upload Screen</Text>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {data && <Text style={styles.text}>{data}</Text>}
         </View>
     );
 };
@@ -19,6 +32,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         fontWeight: 'bold',
+        marginTop: 20,
     },
 });
 
