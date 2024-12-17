@@ -4,27 +4,17 @@ import AuthNavigator from './AuthNavigator';
 import ProtectedNavigator from './ProtectedNavigator';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../src/context/AuthContext';
 
 const RootNavigator = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            // Use this code to check auth
-            const token = await AsyncStorage.getItem("token");
-            setIsAuthenticated(!!token);
-        };
-        checkAuth();
-    }, []);
+    const { isAuthenticated } = useAuth();
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer>
-                {isAuthenticated ? (
-                    <ProtectedNavigator onLogout={() => setIsAuthenticated(false)} />
-                ) : (
-                    <AuthNavigator onLogin={() => setIsAuthenticated(true)} />
-                )}
+                <NavigationContainer>
+                    {isAuthenticated ? <ProtectedNavigator /> : <AuthNavigator />}
+                </NavigationContainer>
             </NavigationContainer>
         </GestureHandlerRootView>
     );
