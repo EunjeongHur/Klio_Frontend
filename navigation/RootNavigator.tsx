@@ -12,9 +12,7 @@ const RootNavigator = () => {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer>
-                <NavigationContainer>
-                    {isAuthenticated ? <ProtectedNavigator /> : <AuthNavigator />}
-                </NavigationContainer>
+                {isAuthenticated ? <ProtectedNavigator /> : <AuthNavigator />}
             </NavigationContainer>
         </GestureHandlerRootView>
     );
