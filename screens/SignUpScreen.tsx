@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert } from "react-native";
+import { Button, ButtonText, Container, Input, SwitchText, Title } from "../components/authComponents";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
     const [fname, setFname] = useState<string>("");
@@ -12,7 +12,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
     const handleSignUp = async () => {
         try {
             console.log("Signing up with:", { fname, lname, email, password, budget });
-            Alert.alert("Success", "(Test)Signed up successfully!");
+            Alert.alert("Success", "(Test) Signed up successfully!");
             navigation.navigate("LogIn");
         } catch (error: any) {
             console.error("Signup failed:", error.message);
@@ -21,50 +21,54 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
     };
 
     const handleBudgetChange = (value: string) => {
-        const numericValue = value.replace(/[^0-9.]/g, '');
+        const numericValue = value.replace(/[^0-9.]/g, "");
         setBudget(numericValue);
     };
 
-
-
     return (
-        <SafeAreaView>
-            <Text>SignUp</Text>
-            <TextInput
+        <Container>
+            <Title>Sign Up</Title>
+            <Input
                 placeholder="First Name"
+                placeholderTextColor="#aaa"
                 value={fname}
                 onChangeText={setFname}
             />
-            <TextInput
+            <Input
                 placeholder="Last Name"
+                placeholderTextColor="#aaa"
                 value={lname}
                 onChangeText={setLname}
             />
-            <TextInput
+            <Input
                 placeholder="Email"
+                placeholderTextColor="#aaa"
+                keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
             />
-            <TextInput
+            <Input
                 placeholder="Password"
+                placeholderTextColor="#aaa"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
             />
-            <TextInput
+            <Input
                 placeholder="Budget"
+                placeholderTextColor="#aaa"
                 keyboardType="decimal-pad"
                 value={budget}
                 onChangeText={handleBudgetChange}
             />
-            <Button title="SignUp" onPress={handleSignUp} />
-            <Text
-                onPress={() => navigation.navigate("LogIn")}
-            >
+            <Button onPress={handleSignUp}>
+                <ButtonText>Sign Up</ButtonText>
+            </Button>
+            <SwitchText onPress={() => navigation.navigate("LogIn")}>
                 Already have an account? Login
-            </Text>
-        </SafeAreaView>
+            </SwitchText>
+        </Container>
     );
-}
+};
 
 export default SignUpScreen;

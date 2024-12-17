@@ -28,8 +28,10 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-react": "^7.26.3",
     "@types/react": "~18.3.12",
+    "@types/styled-components-react-native": "^5.2.5",
     "metro-react-native-babel-preset": "^0.77.0",
     "react-native-dotenv": "^3.4.11",
+    "styled-components": "^6.1.13",
     "typescript": "^5.3.3"
   },
   "private": true
