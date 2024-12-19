@@ -5,6 +5,7 @@ import UploadScreen from '../screens/UploadScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Import MaterialIcons
 import { useAuth } from '../src/context/AuthContext';
+import TestScreen from '../screens/dbTestscreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,6 +45,7 @@ const ProtectedNavigator = () => {
         >
             <Tab.Screen name="Dashboard" component={DashboardScreen} />
             <Tab.Screen name="Upload" component={UploadScreen} />
+            <Tab.Screen name="Test" component={TestScreen} />
             <Tab.Screen name="Profile">
                 {(props) => <ProfileScreen {...props} onLogout={handleLogout} />}
             </Tab.Screen>
