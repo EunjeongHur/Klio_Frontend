@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, Image } from 'react-native';
-import { Button, Card, Modal, Portal, Text, Provider, IconButton } from 'react-native-paper';
+import { Button, Card, Modal, Portal, Text, Provider, IconButton, TextInput, List } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { uploadTest } from '../services/apiService';
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 const UploadScreen: React.FC = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uploadStatus, setUploadStatus] = useState<string | null>(null);
     const [data, setData] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+
+    // Additional State
+    const [category, setCategory] = useState<string | null>(null);
+    const [categoryMenuVisible, setCategoryMenuVisible] = useState(false);
+    const [storeName, setStoreName] = useState<string>('');
+    const [purchaseDate, setPurchaseDate] = useState<Date>(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [totalAmount, setTotalAmount] = useState<string>('');
+    const [note, setNote] = useState<string>('');
+
 
     // Handle image selection from library
     const handlePickImage = async () => {
@@ -83,44 +95,82 @@ const UploadScreen: React.FC = () => {
     return (
         <Provider>
             <ScrollView contentContainerStyle={styles.container}>
-            <Card style={styles.card} onPress={() => setModalVisible(true)}>
-                <View style={styles.cardContent}>
-                    {/* Show IconButton and Text only if no image is selected */}
-                    {!selectedImage && (
-                        <>
-                            <IconButton
-                                icon="cloud-upload"
-                                size={40}
-                                iconColor="#4A90E2"
-                                style={styles.icon}
-                            />
-                            <Text style={styles.title}>Upload File</Text>
-                            <Text style={styles.subtitle}>PDF, JPG, PNG (50MB max)</Text>
-                        </>
-                    )}
+                <Card style={styles.card} onPress={() => setModalVisible(true)}>
+                    <View style={styles.cardContent}>
+                        {/* Show IconButton and Text only if no image is selected */}
+                        {!selectedImage && (
+                            <>
+                                <IconButton
+                                    icon="cloud-upload"
+                                    size={40}
+                                    iconColor="#4A90E2"
+                                    style={styles.icon}
+                                />
+                                <Text style={styles.title}>Upload File</Text>
+                            </>
+                        )}
 
-                    {/* Show the selected image and the "X" button in a row */}
-                    {selectedImage && (
-                        <View style={styles.imageRow}>
-                            <Image source={{ uri: selectedImage }} style={styles.image} />
-                            <IconButton
-                                icon="close"
-                                size={24}
-                                iconColor="#FF0000"
-                                onPress={() => setSelectedImage(null)} // Clear the selected image
-                                style={styles.closeButton}
-                            />
-                        </View>
-                    )}
-                </View>
-            </Card>
+                        {/* Show the selected image and the "X" button in a row */}
+                        {selectedImage && (
+                            <View style={styles.imageRow}>
+                                <Image source={{ uri: selectedImage }} style={styles.image} />
+                                <IconButton
+                                    icon="close"
+                                    size={24}
+                                    iconColor="#FF0000"
+                                    onPress={() => setSelectedImage(null)} // Clear the selected image
+                                    style={styles.closeButton}
+                                />
+                            </View>
+                        )}
+                    </View>
+                </Card>
 
-                
+
                 <Button mode="contained" onPress={handleUploadImage} style={styles.button}>
                     Upload Image
                 </Button>
+
                 {uploadStatus && <Text style={styles.status}>{uploadStatus}</Text>}
                 {data && <Text style={styles.text}>{data}</Text>}
+
+                <View style={styles.formArea}>
+                    <List.Section title="Categories">
+                        <List.Accordion
+                            title="Select Categories">
+                            <List.Item title="Groceries" />
+                            <List.Item title="Shopping" />
+                            <List.Item title="ETC" />
+                        </List.Accordion>
+                    </List.Section>
+
+                    <TextInput
+                        label="Store name"
+                        value={storeName}
+                        onChangeText={setStoreName}
+                    />
+
+                    <Text style={styles.label}>Purchase Date</Text>
+
+                    <TextInput
+                        label="Total"
+                        keyboardType="numeric"
+                        value={totalAmount}
+                        onChangeText={setTotalAmount}
+                    />
+
+                    <TextInput
+                        style={styles.input}
+                        label="Note"
+                        value={note}
+                        onChangeText={setNote}
+                        multiline
+                    />
+                </View>
+
+                <Button mode="contained" onPress={handleUploadImage} style={styles.button}>
+                    Upload
+                </Button>
 
                 {/* Modal for choosing options */}
                 <Portal>
@@ -222,6 +272,31 @@ const styles = StyleSheet.create({
     },
     modalButton: {
         marginVertical: 10,
+    },
+    formArea: {
+        width: '90%', // container와 동일한 너비
+        alignSelf: 'center', // 가운데 정렬
+    },
+    input: {
+        marginVertical: 20,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: '#333',
+        textAlign: "left",
+    },
+    textArea: {
+        width: '100%', // formArea의 너비에 맞추기
+        height: 100, // 원하는 높이 설정
+        marginVertical: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        textAlignVertical: 'top', // 멀티라인 입력 시 텍스트 상단 정렬
     },
 });
 
