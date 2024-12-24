@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet, Image } from 'react-native';
 import { Button, Card, Modal, Portal, Text, Provider, IconButton, TextInput, List } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { uploadTest } from '../services/apiService';
-import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const UploadScreen: React.FC = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -92,6 +91,24 @@ const UploadScreen: React.FC = () => {
         }
     };
 
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+    const showDatePickerfun = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date: Date) => {
+        // Format the date as needed, for example: YYYY-MM-DD
+        const formattedDate = date.toISOString().split('T')[0]; // Format to "YYYY-MM-DD"
+        setSelectedDate(formattedDate);
+        hideDatePicker();
+    };
+
     return (
         <Provider>
             <ScrollView contentContainerStyle={styles.container}>
@@ -150,7 +167,23 @@ const UploadScreen: React.FC = () => {
                         onChangeText={setStoreName}
                     />
 
-                    <Text style={styles.label}>Purchase Date</Text>
+                    <Button mode="contained" onPress={showDatePickerfun} style={styles.button}>
+                        Show Date picker
+                    </Button>
+
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                    />
+
+                    {/* Display the selected date */}
+                    {selectedDate && (
+                        <Text style={styles.selectedDateText}>
+                            Selected Date: {selectedDate}
+                        </Text>
+                    )}
 
                     <TextInput
                         label="Total"
@@ -297,6 +330,12 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#FFFFFF',
         textAlignVertical: 'top', // 멀티라인 입력 시 텍스트 상단 정렬
+    },
+    selectedDateText: {
+        marginTop: 20,
+        fontSize: 18,
+        color: '#333',
+        fontWeight: 'bold',
     },
 });
 
