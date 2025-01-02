@@ -50,3 +50,41 @@ export const uploadTest = async (formData: FormData) => {
 		throw error;
 	}
 };
+
+export const signUp = async (user: {
+	fname: string;
+	lname: string;
+	email: string;
+	password: string;
+	budget: number;
+}) => {
+	try {
+		const response = await api.post(`/api/auth/signup`, user);
+		console.log("Success:", response.data);
+		return response.data;
+	} catch (error: any) {
+		if (error.response && error.response.data) {
+			console.error("Signup failed:", error.response.data.message);
+			throw new Error(error.response.data.message);
+		} else {
+			console.error("Unexpected error:", error.message);
+			throw new Error("An unexpected error occurred");
+		}
+	}
+};
+
+export const logIn = async (email: string, password: string) => {
+	try {
+		const response = await api.post(`/api/auth/login`, { email, password });
+		console.log("Success:", response.data);
+		return response.data;
+	} catch (error: any) {
+		if (error.response && error.response.data) {
+			console.error("Login failed:", error.response.data.message);
+			throw new Error(error.response.data.message);
+		} else {
+			console.error("Unexpected error:", error.message);
+			throw new Error("An unexpected error occurred");
+		}
+	}
+};

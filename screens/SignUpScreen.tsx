@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, ActivityIndicator } from "react-native";
 import { Button, ButtonText, Container, Input, SwitchText, Title } from "../components/authComponents";
+import { signUp } from "../services/apiService";
+import { validatePassword } from "../utils/passwordValidator";
 
 const SignUpScreen = ({ navigation }: { navigation: any }) => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [fname, setFname] = useState<string>("");
     const [lname, setLname] = useState<string>("");
     const [email, setEmail] = useState<string>("");
@@ -10,13 +13,28 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
     const [budget, setBudget] = useState<string>("");
 
     const handleSignUp = async () => {
+        if (!fname || !lname || !email || !password || !budget) {
+            Alert.alert("Error", "All fields are required.");
+            return;
+        }
+
+        const passwordErrors = validatePassword(password);
+        if (passwordErrors.length > 0) {
+            Alert.alert("Password Requirements", passwordErrors.join("\n"));
+            return;
+        }
+
         try {
+            setIsLoading(true);
             console.log("Signing up with:", { fname, lname, email, password, budget });
-            Alert.alert("Success", "(Test) Signed up successfully!");
+            const result = await signUp({ fname, lname, email, password, budget: parseFloat(budget) });
+            Alert.alert("Success", "Signed up successfully!");
             navigation.navigate("LogIn");
         } catch (error: any) {
-            console.error("Signup failed:", error.message);
-            Alert.alert("Error", error.response?.data?.error || "Failed to sign up.");
+            const errorMessage = error.response?.data?.message || error.message || "Failed to sign up.";
+            Alert.alert("Error", errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -61,8 +79,12 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                 value={budget}
                 onChangeText={handleBudgetChange}
             />
-            <Button onPress={handleSignUp}>
-                <ButtonText>Sign Up</ButtonText>
+            <Button onPress={handleSignUp} disabled={isLoading}>
+                {isLoading ? (
+                    <ActivityIndicator color="#fff" />
+                ) : (
+                    <ButtonText>Sign Up</ButtonText>
+                )}
             </Button>
             <SwitchText onPress={() => navigation.navigate("LogIn")}>
                 Already have an account? Login

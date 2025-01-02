@@ -83,6 +83,7 @@ const UploadScreen: React.FC = () => {
             formData.append("file", fileBlob as any);
 
             const result = await uploadTest(formData);
+            console.log(result);
             setData(result);
             setUploadStatus("Image uploaded successfully!");
         } catch (error) {
@@ -149,7 +150,7 @@ const UploadScreen: React.FC = () => {
                 </Button>
 
                 {uploadStatus && <Text style={styles.status}>{uploadStatus}</Text>}
-                {data && <Text style={styles.text}>{data}</Text>}
+                {/* {data && <Text style={styles.text}>{data}</Text>} */}
 
                 <View style={styles.formArea}>
                     <List.Section title="Categories">
